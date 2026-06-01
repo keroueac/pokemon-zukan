@@ -8,355 +8,234 @@
 <meta name="apple-mobile-web-app-title" content="ポケモン図鑑">
 <title>ポケモン図鑑</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
-    background: #f5f5f7;
-    color: #1d1d1f;
-    min-height: 100vh;
-  }
-  header {
-    background: #fff;
-    border-bottom: 1px solid #e0e0e0;
-    padding: 12px 16px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  header h1 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: #1d1d1f;
-  }
-  .gen-scroll {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    padding-bottom: 2px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .gen-scroll::-webkit-scrollbar { display: none; }
-  .gen-btn {
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: 1px solid #d0d0d0;
-    background: #fff;
-    color: #1d1d1f;
-    cursor: pointer;
-    font-size: 13px;
-    white-space: nowrap;
-    -webkit-tap-highlight-color: transparent;
-    transition: background 0.15s, border-color 0.15s;
-  }
-  .gen-btn.active {
-    background: #1d1d1f;
-    color: #fff;
-    border-color: #1d1d1f;
-    font-weight: 500;
-  }
-  .toolbar {
-    padding: 10px 16px;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .tool-btn {
-    padding: 7px 14px;
-    border-radius: 8px;
-    border: 1px solid #d0d0d0;
-    background: #fff;
-    color: #1d1d1f;
-    cursor: pointer;
-    font-size: 13px;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .tool-btn:active { background: #f0f0f0; }
-  .status {
-    font-size: 13px;
-    color: #666;
-    margin-left: auto;
-  }
-  .progress-outer {
-    height: 3px;
-    background: #e0e0e0;
-    border-radius: 99px;
-    overflow: hidden;
-    margin: 0 16px 4px;
-  }
-  .progress-inner {
-    height: 100%;
-    background: #1d1d1f;
-    border-radius: 99px;
-    transition: width 0.3s;
-    width: 0%;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 10px;
-    padding: 12px 12px 32px;
-  }
-  .card-wrap {
-    perspective: 600px;
-    height: 190px;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .card-inner {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.4s ease;
-  }
-  .card-inner.flipped { transform: rotateY(180deg); }
-  .card-face {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    border-radius: 14px;
-    background: #fff;
-    border: 1px solid #e8e8e8;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    padding: 10px 8px;
-  }
-  .card-back { transform: rotateY(180deg); padding: 10px 8px; }
-  .poke-img { width: 90px; height: 90px; image-rendering: auto; }
-  .poke-img-back { width: 72px; height: 72px; image-rendering: auto; }
-  .hint { font-size: 10px; color: #aaa; margin-top: 4px; }
-  .poke-no { font-size: 10px; color: #aaa; }
-  .poke-name { font-size: 15px; font-weight: 600; text-align: center; color: #1d1d1f; }
-  .type-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; margin-top: 4px; }
-  .type-badge {
-    padding: 2px 9px;
-    border-radius: 99px;
-    font-size: 11px;
-    font-weight: 500;
-  }
-  .loading {
-    text-align: center;
-    padding: 40px 16px;
-    color: #888;
-    font-size: 14px;
-  }
-  .empty {
-    text-align: center;
-    padding: 60px 16px;
-    color: #aaa;
-    font-size: 15px;
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif; background: #f5f5f7; color: #1d1d1f; min-height: 100vh; }
+header { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 12px 16px 0; position: sticky; top: 0; z-index: 100; }
+header h1 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+.tab-row { display: flex; gap: 0; }
+.tab-btn { flex: 1; padding: 8px 0; border: none; background: none; font-size: 13px; font-weight: 500; color: #888; cursor: pointer; border-bottom: 2px solid transparent; -webkit-tap-highlight-color: transparent; }
+.tab-btn.active { color: #1d1d1f; border-bottom-color: #1d1d1f; }
+.gen-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.gen-scroll::-webkit-scrollbar { display: none; }
+.gen-btn { padding: 6px 14px; border-radius: 20px; border: 1px solid #d0d0d0; background: #fff; color: #1d1d1f; cursor: pointer; font-size: 13px; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
+.gen-btn.active { background: #1d1d1f; color: #fff; border-color: #1d1d1f; font-weight: 500; }
+.toolbar { padding: 10px 16px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.tool-btn { padding: 7px 14px; border-radius: 8px; border: 1px solid #d0d0d0; background: #fff; color: #1d1d1f; cursor: pointer; font-size: 13px; -webkit-tap-highlight-color: transparent; }
+.tool-btn:active { background: #f0f0f0; }
+.status { font-size: 13px; color: #666; margin-left: auto; }
+.progress-outer { height: 3px; background: #e0e0e0; border-radius: 99px; overflow: hidden; margin: 0 16px 4px; }
+.progress-inner { height: 100%; background: #1d1d1f; border-radius: 99px; transition: width 0.3s; width: 0%; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; padding: 12px 12px 32px; }
+.card-wrap { perspective: 600px; height: 190px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.card-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.4s ease; }
+.card-inner.flipped { transform: rotateY(180deg); }
+.card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 14px; background: #fff; border: 1px solid #e8e8e8; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px 8px; }
+.card-back { transform: rotateY(180deg); }
+.poke-img { width: 90px; height: 90px; }
+.poke-img-back { width: 72px; height: 72px; }
+.hint { font-size: 10px; color: #aaa; margin-top: 4px; }
+.poke-no { font-size: 10px; color: #aaa; }
+.poke-name { font-size: 15px; font-weight: 600; text-align: center; color: #1d1d1f; }
+.type-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; margin-top: 4px; }
+.type-badge { padding: 2px 9px; border-radius: 99px; font-size: 11px; font-weight: 500; }
+.loading { text-align: center; padding: 40px 16px; color: #888; font-size: 14px; }
+.empty { text-align: center; padding: 60px 16px; color: #aaa; font-size: 15px; }
+/* 相性 */
+.type-sel-btn { padding: 5px 12px; border-radius: 99px; border: 2px solid transparent; font-size: 13px; font-weight: 500; cursor: pointer; -webkit-tap-highlight-color: transparent; opacity: 0.65; transition: opacity 0.15s, border-color 0.15s; }
+.type-sel-btn.selected { opacity: 1; border-color: #1d1d1f; }
+.compat-box { background: #fff; border-radius: 12px; border: 1px solid #e8e8e8; padding: 10px 12px; margin-bottom: 8px; }
+.compat-box h3 { font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+/* matrix */
+.matrix-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.mtable { border-collapse: collapse; font-size: 10px; }
+.mtable th, .mtable td { padding: 0; }
+.mtable td { width: 20px; height: 20px; text-align: center; border: 0.5px solid #f0f0f0; font-size: 10px; font-weight: 600; }
+.vlabel { writing-mode: vertical-lr; transform: rotate(180deg); font-size: 10px; padding: 3px 2px; white-space: nowrap; }
+.m2 { background: #e84040; color: #fff; }
+.mh { background: #88cc88; color: #1a4a1a; }
+.mq { background: #44aa44; color: #fff; }
+.mz { background: #333; color: #fff; }
 </style>
 </head>
 <body>
-
 <header>
   <h1>ポケモン図鑑</h1>
-  <div class="gen-scroll" id="gen-selector"></div>
+  <div class="tab-row">
+    <button class="tab-btn active" id="btn-zukan" onclick="switchTab('zukan')">図鑑</button>
+    <button class="tab-btn" id="btn-compat" onclick="switchTab('compat')">タイプ相性</button>
+    <button class="tab-btn" id="btn-matrix" onclick="switchTab('matrix')">相性マトリクス</button>
+  </div>
 </header>
 
-<div id="toolbar-area" style="display:none">
-  <div class="progress-outer"><div class="progress-inner" id="progress-bar"></div></div>
-  <div class="toolbar">
-    <button class="tool-btn" onclick="revealAll()">すべて開く</button>
-    <button class="tool-btn" onclick="closeAll()">すべて閉じる</button>
-    <button class="tool-btn" onclick="shuffleCurrent()">シャッフル</button>
-    <span class="status" id="status-label"></span>
+<!-- 図鑑 -->
+<div id="tab-zukan">
+  <div style="background:#fff;border-bottom:1px solid #e0e0e0;padding:10px 16px;">
+    <div class="gen-scroll" id="gen-selector"></div>
   </div>
+  <div id="toolbar-area" style="display:none">
+    <div class="progress-outer"><div class="progress-inner" id="progress-bar"></div></div>
+    <div class="toolbar">
+      <button class="tool-btn" onclick="revealAll()">すべて開く</button>
+      <button class="tool-btn" onclick="closeAll()">すべて閉じる</button>
+      <button class="tool-btn" onclick="shuffleCurrent()">シャッフル</button>
+      <span class="status" id="status-label"></span>
+    </div>
+  </div>
+  <div id="loading-area" class="loading" style="display:none">読み込み中... <span id="load-progress"></span></div>
+  <div id="empty-area" class="empty">世代を選んでください</div>
+  <div class="grid" id="grid"></div>
 </div>
 
-<div id="loading-area" class="loading" style="display:none">
-  読み込み中... <span id="load-progress"></span>
+<!-- タイプ相性 -->
+<div id="tab-compat" style="display:none;padding:12px 16px;">
+  <div style="font-size:14px;font-weight:600;margin-bottom:10px;">タイプを選択（最大2つ）</div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;" id="type-sel-grid"></div>
+  <div id="compat-result"></div>
 </div>
 
-<div id="empty-area" class="empty">世代を選んでください</div>
-
-<div class="grid" id="grid"></div>
+<!-- マトリクス -->
+<div id="tab-matrix" style="display:none;padding:12px 16px;">
+  <div style="font-size:14px;font-weight:600;margin-bottom:6px;">攻撃側（列）→ 防御側（行）の倍率</div>
+  <div style="font-size:12px;color:#888;margin-bottom:10px;display:flex;gap:10px;flex-wrap:wrap;">
+    <span><span style="display:inline-block;width:14px;height:14px;background:#e84040;border-radius:2px;vertical-align:middle;margin-right:2px;"></span>×2</span>
+    <span><span style="display:inline-block;width:14px;height:14px;background:#88cc88;border-radius:2px;vertical-align:middle;margin-right:2px;"></span>×½</span>
+    <span><span style="display:inline-block;width:14px;height:14px;background:#44aa44;border-radius:2px;vertical-align:middle;margin-right:2px;"></span>×¼</span>
+    <span><span style="display:inline-block;width:14px;height:14px;background:#333;border-radius:2px;vertical-align:middle;margin-right:2px;"></span>×0</span>
+  </div>
+  <div class="matrix-wrap" id="matrix-wrap"></div>
+</div>
 
 <script>
-const GENERATIONS = [
-  {label:'第1世代',name:'カントー',start:1,end:151},
-  {label:'第2世代',name:'ジョウト',start:152,end:251},
-  {label:'第3世代',name:'ホウエン',start:252,end:386},
-  {label:'第4世代',name:'シンオウ',start:387,end:493},
-  {label:'第5世代',name:'イッシュ',start:494,end:649},
-  {label:'第6世代',name:'カロス',start:650,end:721},
-  {label:'第7世代',name:'アローラ',start:722,end:809},
-  {label:'第8世代',name:'ガラル',start:810,end:905},
-  {label:'第9世代',name:'パルデア',start:906,end:1025},
-];
+const GENS=[{label:'第1世代',name:'カントー',start:1,end:151},{label:'第2世代',name:'ジョウト',start:152,end:251},{label:'第3世代',name:'ホウエン',start:252,end:386},{label:'第4世代',name:'シンオウ',start:387,end:493},{label:'第5世代',name:'イッシュ',start:494,end:649},{label:'第6世代',name:'カロス',start:650,end:721},{label:'第7世代',name:'アローラ',start:722,end:809},{label:'第8世代',name:'ガラル',start:810,end:905},{label:'第9世代',name:'パルデア',start:906,end:1025}];
+const TYPES=['normal','fire','water','electric','grass','ice','fighting','poison','ground','flying','psychic','bug','rock','ghost','dragon','dark','steel','fairy'];
+const TC={normal:{bg:'#A8A878',text:'#fff'},fire:{bg:'#F08030',text:'#fff'},water:{bg:'#6890F0',text:'#fff'},electric:{bg:'#F8D030',text:'#3a2800'},grass:{bg:'#78C850',text:'#fff'},ice:{bg:'#98D8D8',text:'#1a5a5a'},fighting:{bg:'#C03028',text:'#fff'},poison:{bg:'#A040A0',text:'#fff'},ground:{bg:'#E0C068',text:'#3a2800'},flying:{bg:'#A890F0',text:'#fff'},psychic:{bg:'#F85888',text:'#fff'},bug:{bg:'#A8B820',text:'#fff'},rock:{bg:'#B8A038',text:'#fff'},ghost:{bg:'#705898',text:'#fff'},dragon:{bg:'#7038F8',text:'#fff'},dark:{bg:'#705848',text:'#fff'},steel:{bg:'#B8B8D0',text:'#333'},fairy:{bg:'#EE99AC',text:'#5a1a2a'}};
+const TJ={normal:'ノーマル',fire:'ほのお',water:'みず',electric:'でんき',grass:'くさ',ice:'こおり',fighting:'かくとう',poison:'どく',ground:'じめん',flying:'ひこう',psychic:'エスパー',bug:'むし',rock:'いわ',ghost:'ゴースト',dragon:'ドラゴン',dark:'あく',steel:'はがね',fairy:'フェアリー'};
+const ATK={normal:{rock:0.5,ghost:0,steel:0.5},fire:{fire:0.5,water:0.5,grass:2,ice:2,bug:2,rock:0.5,dragon:0.5,steel:2},water:{fire:2,water:0.5,grass:0.5,ground:2,rock:2,dragon:0.5},electric:{water:2,electric:0.5,grass:0.5,ground:0,flying:2,dragon:0.5},grass:{fire:0.5,water:2,grass:0.5,poison:0.5,ground:2,flying:0.5,bug:0.5,rock:2,dragon:0.5,steel:0.5},ice:{fire:0.5,water:0.5,grass:2,ice:0.5,ground:2,flying:2,dragon:2,steel:0.5},fighting:{normal:2,ice:2,poison:0.5,flying:0.5,psychic:0.5,bug:0.5,rock:2,ghost:0,dark:2,steel:2,fairy:0.5},poison:{grass:2,poison:0.5,ground:0.5,rock:0.5,ghost:0.5,steel:0,fairy:2},ground:{fire:2,electric:2,grass:0.5,poison:2,flying:0,bug:0.5,rock:2,steel:2},flying:{electric:0.5,grass:2,fighting:2,bug:2,rock:0.5,steel:0.5},psychic:{fighting:2,poison:2,psychic:0.5,dark:0,steel:0.5},bug:{fire:0.5,grass:2,fighting:0.5,poison:0.5,flying:0.5,psychic:2,ghost:0.5,dark:2,steel:0.5,fairy:0.5},rock:{fire:2,ice:2,fighting:0.5,ground:0.5,flying:2,bug:2,steel:0.5},ghost:{normal:0,psychic:2,ghost:2,dark:0.5},dragon:{dragon:2,steel:0.5,fairy:0},dark:{fighting:0.5,psychic:2,ghost:2,dark:0.5,fairy:0.5},steel:{fire:0.5,water:0.5,electric:0.5,ice:2,rock:2,steel:0.5,fairy:2},fairy:{fire:0.5,fighting:2,poison:0.5,dragon:2,dark:2,steel:0.5}};
 
-const TYPE_COLORS = {
-  normal:{bg:'#A8A878',text:'#fff'},fire:{bg:'#F08030',text:'#fff'},water:{bg:'#6890F0',text:'#fff'},electric:{bg:'#F8D030',text:'#3a2800'},grass:{bg:'#78C850',text:'#fff'},ice:{bg:'#98D8D8',text:'#1a5a5a'},fighting:{bg:'#C03028',text:'#fff'},poison:{bg:'#A040A0',text:'#fff'},ground:{bg:'#E0C068',text:'#3a2800'},flying:{bg:'#A890F0',text:'#fff'},psychic:{bg:'#F85888',text:'#fff'},bug:{bg:'#A8B820',text:'#fff'},rock:{bg:'#B8A038',text:'#fff'},ghost:{bg:'#705898',text:'#fff'},dragon:{bg:'#7038F8',text:'#fff'},dark:{bg:'#705848',text:'#fff'},steel:{bg:'#B8B8D0',text:'#333'},fairy:{bg:'#EE99AC',text:'#5a1a2a'},
-};
-const TYPE_JP = {
-  normal:'ノーマル',fire:'ほのお',water:'みず',electric:'でんき',grass:'くさ',ice:'こおり',fighting:'かくとう',poison:'どく',ground:'じめん',flying:'ひこう',psychic:'エスパー',bug:'むし',rock:'いわ',ghost:'ゴースト',dragon:'ドラゴン',dark:'あく',steel:'はがね',fairy:'フェアリー',
-};
+function ga(atk,def){return(ATK[atk]&&ATK[atk][def]!==undefined)?ATK[atk][def]:1;}
+function defMult(defs){const r={};TYPES.forEach(a=>{let m=1;defs.forEach(d=>{m*=ga(a,d);});r[a]=m;});return r;}
 
-const JP = {
-  bulbasaur:'フシギダネ',ivysaur:'フシギソウ',venusaur:'フシギバナ',charmander:'ヒトカゲ',charmeleon:'リザード',charizard:'リザードン',squirtle:'ゼニガメ',wartortle:'カメール',blastoise:'カメックス',caterpie:'キャタピー',metapod:'トランセル',butterfree:'バタフリー',weedle:'ビードル',kakuna:'コクーン',beedrill:'スピアー',pidgey:'ポッポ',pidgeotto:'ピジョン',pidgeot:'ピジョット',rattata:'コラッタ',raticate:'ラッタ',spearow:'オニスズメ',fearow:'オニドリル',ekans:'アーボ',arbok:'アーボック',pikachu:'ピカチュウ',raichu:'ライチュウ',sandshrew:'サンド',sandslash:'サンドパン','nidoran-f':'ニドラン♀',nidorina:'ニドリーナ',nidoqueen:'ニドクイン','nidoran-m':'ニドラン♂',nidorino:'ニドリーノ',nidoking:'ニドキング',clefairy:'ピッピ',clefable:'ピクシー',vulpix:'ロコン',ninetales:'キュウコン',jigglypuff:'プリン',wigglytuff:'プクリン',zubat:'ズバット',golbat:'ゴルバット',oddish:'ナゾノクサ',gloom:'クサイハナ',vileplume:'ラフレシア',paras:'パラス',parasect:'パラセクト',venonat:'コンパン',venomoth:'モルフォン',diglett:'ディグダ',dugtrio:'ダグトリオ',meowth:'ニャース',persian:'ペルシアン',psyduck:'コダック',golduck:'ゴルダック',mankey:'マンキー',primeape:'オコリザル',growlithe:'ガーディ',arcanine:'ウインディ',poliwag:'ニョロモ',poliwhirl:'ニョロゾ',poliwrath:'ニョロボン',abra:'ケーシィ',kadabra:'ユンゲラー',alakazam:'フーディン',machop:'ワンリキー',machoke:'ゴーリキー',machamp:'カイリキー',bellsprout:'マダツボミ',weepinbell:'ウツドン',victreebel:'ウツボット',tentacool:'メノクラゲ',tentacruel:'ドククラゲ',geodude:'イシツブテ',graveler:'ゴローン',golem:'ゴローニャ',ponyta:'ポニータ',rapidash:'ギャロップ',slowpoke:'ヤドン',slowbro:'ヤドラン',magnemite:'コイル',magneton:'レアコイル',farfetchd:'カモネギ',doduo:'ドードー',dodrio:'ドードリオ',seel:'パウワウ',dewgong:'ジュゴン',grimer:'ベトベター',muk:'ベトベトン',shellder:'シェルダー',cloyster:'パルシェン',gastly:'ゴース',haunter:'ゴースト',gengar:'ゲンガー',onix:'イワーク',drowzee:'スリープ',hypno:'スリーパー',krabby:'クラブ',kingler:'キングラー',voltorb:'ビリリダマ',electrode:'マルマイン',exeggcute:'タマタマ',exeggutor:'ナッシー',cubone:'カラカラ',marowak:'ガラガラ',hitmonlee:'サワムラー',hitmonchan:'エビワラー',lickitung:'ベロリンガ',koffing:'ドガース',weezing:'マタドガス',rhyhorn:'サイホーン',rhydon:'サイドン',chansey:'ラッキー',tangela:'モンジャラ',kangaskhan:'ガルーラ',horsea:'タッツー',seadra:'シードラ',goldeen:'トサキント',seaking:'アズマオウ',staryu:'ヒトデマン',starmie:'スターミー','mr-mime':'バリヤード',scyther:'ストライク',jynx:'ルージュラ',electabuzz:'エレブー',magmar:'ブーバー',pinsir:'カイロス',tauros:'ケンタロス',magikarp:'コイキング',gyarados:'ギャラドス',lapras:'ラプラス',ditto:'メタモン',eevee:'イーブイ',vaporeon:'シャワーズ',jolteon:'サンダース',flareon:'ブースター',porygon:'ポリゴン',omanyte:'オムナイト',omastar:'オムスター',kabuto:'カブト',kabutops:'カブトプス',aerodactyl:'プテラ',snorlax:'カビゴン',articuno:'フリーザー',zapdos:'サンダー',moltres:'ファイヤー',dratini:'ミニリュウ',dragonair:'ハクリュー',dragonite:'カイリュー',mewtwo:'ミュウツー',mew:'ミュウ',
-  chikorita:'チコリータ',bayleef:'ベイリーフ',meganium:'メガニウム',cyndaquil:'ヒノアラシ',quilava:'マグマラシ',typhlosion:'バクフーン',totodile:'ワニノコ',croconaw:'アリゲイツ',feraligatr:'オーダイル',sentret:'オタチ',furret:'オオタチ',hoothoot:'ホーホー',noctowl:'ヨルノズク',ledyba:'レディバ',ledian:'レディアン',spinarak:'イトマル',ariados:'アリアドス',crobat:'クロバット',chinchou:'チョンチー',lanturn:'ランターン',pichu:'ピチュー',cleffa:'ピィ',igglybuff:'ププリン',togepi:'トゲピー',togetic:'トゲチック',natu:'ネイティ',xatu:'ネイティオ',mareep:'メリープ',flaaffy:'モコシープ',ampharos:'デンリュウ',bellossom:'キレイハナ',marill:'マリル',azumarill:'マリルリ',sudowoodo:'ウソッキー',politoed:'ニョロトノ',hoppip:'ハネッコ',skiploom:'ポポッコ',jumpluff:'ワタッコ',aipom:'エイパム',sunkern:'ヒマナッツ',sunflora:'キマワリ',yanma:'ヤンヤンマ',wooper:'ウパー',quagsire:'ヌオー',espeon:'エーフィ',umbreon:'ブラッキー',murkrow:'ヤミカラス',slowking:'ヤドキング',misdreavus:'ムウマ',unown:'アンノーン',wobbuffet:'ソーナンス',girafarig:'キリンリキ',pineco:'クヌギダマ',forretress:'フォレトス',dunsparce:'ノコッチ',gligar:'グライガー',steelix:'ハガネール',snubbull:'ブルー',granbull:'グランブル',qwilfish:'ハリーセン',scizor:'ハッサム',shuckle:'ツボツボ',heracross:'ヘラクロス',sneasel:'ニューラ',teddiursa:'ヒメグマ',ursaring:'リングマ',slugma:'マグマッグ',magcargo:'マグカルゴ',swinub:'ウリムー',piloswine:'イノムー',corsola:'サニーゴ',remoraid:'テッポウオ',octillery:'オクタン',delibird:'デリバード',mantine:'マンタイン',skarmory:'エアームド',houndour:'デルビル',houndoom:'ヘルガー',kingdra:'キングドラ',phanpy:'ゴマゾウ',donphan:'ドンファン',porygon2:'ポリゴン2',stantler:'オドシシ',smeargle:'ドーブル',tyrogue:'バルキー',hitmontop:'カポエラー',smoochum:'ムチュール',elekid:'エレキッド',magby:'ブビィ',miltank:'ミルタンク',blissey:'ハピナス',raikou:'ライコウ',entei:'エンテイ',suicune:'スイクン',larvitar:'ヨーギラス',pupitar:'サナギラス',tyranitar:'バンギラス',lugia:'ルギア','ho-oh':'ホウオウ',celebi:'セレビィ',
-  treecko:'キモリ',grovyle:'ジュプトル',sceptile:'ジュカイン',torchic:'アチャモ',combusken:'ワカシャモ',blaziken:'バシャーモ',mudkip:'ミズゴロウ',marshtomp:'ヌマクロー',swampert:'ラグラージ',poochyena:'ポチエナ',mightyena:'グラエナ',zigzagoon:'ジグザグマ',linoone:'マッスグマ',wurmple:'ケムッソ',silcoon:'カラサリス',beautifly:'アゲハント',cascoon:'マユルド',dustox:'ドクケイル',lotad:'ハスボー',lombre:'ハスブレロ',ludicolo:'ルンパッパ',seedot:'タネボー',nuzleaf:'コノハナ',shiftry:'ダーテング',taillow:'スバメ',swellow:'オオスバメ',wingull:'キャモメ',pelipper:'ペリッパー',ralts:'ラルトス',kirlia:'キルリア',gardevoir:'サーナイト',surskit:'アメタマ',masquerain:'アメモース',shroomish:'キノコ',breloom:'キノガッサ',slakoth:'ナマケロ',vigoroth:'ヤルキモノ',slaking:'ケッキング',nincada:'ツチニン',ninjask:'テッカニン',shedinja:'ヌケニン',whismur:'ゴニョニョ',loudred:'ドゴーム',exploud:'バクオング',makuhita:'マクノシタ',hariyama:'ハリテヤマ',azurill:'ルリリ',nosepass:'ノズパス',skitty:'エネコ',delcatty:'エネコロロ',sableye:'ヤミラミ',mawile:'クチート',aron:'ココドラ',lairon:'コドラ',aggron:'ボスゴドラ',meditite:'アサナン',medicham:'チャーレム',electrike:'ラクライ',manectric:'ライボルト',plusle:'プラスル',minun:'マイナン',volbeat:'バルビート',illumise:'イルミーゼ',roselia:'ロゼリア',gulpin:'ゴクリン',swalot:'マルノーム',carvanha:'キバニア',sharpedo:'サメハダー',wailmer:'ホエルコ',wailord:'ホエルオー',numel:'ドンメル',camerupt:'バクーダ',torkoal:'コータス',spoink:'バネブー',grumpig:'ブーピッグ',spinda:'パッチール',trapinch:'ナックラー',vibrava:'ビブラーバ',flygon:'フライゴン',cacnea:'サボネア',cacturne:'ノクタス',swablu:'チルット',altaria:'チルタリス',zangoose:'ザングース',seviper:'ハブネーク',lunatone:'ルナトーン',solrock:'ソルロック',barboach:'ドジョッチ',whiscash:'ナマズン',corphish:'ヘイガニ',crawdaunt:'シザリガー',baltoy:'ヤジロン',claydol:'ネンドール',lileep:'リリーラ',cradily:'ユレイドル',anorith:'アノプス',armaldo:'アーマルド',feebas:'ヒンバス',milotic:'ミロカロス',castform:'ポワルン',kecleon:'カクレオン',shuppet:'カゲボウズ',banette:'ジュペッタ',duskull:'ヨマワル',dusclops:'サマヨール',tropius:'トロピウス',chimecho:'チリーン',absol:'アブソル',wynaut:'ソーナノ',snorunt:'ユキワラシ',glalie:'オニゴーリ',spheal:'タマザラシ',sealeo:'トドグラー',walrein:'トドゼルガ',clamperl:'パールル',huntail:'ハンテール',gorebyss:'サクラビス',relicanth:'ジーランス',luvdisc:'ラブカス',bagon:'タツベイ',shelgon:'コモルー',salamence:'ボーマンダ',beldum:'ダンバル',metang:'メタング',metagross:'メタグロス',regirock:'レジロック',regice:'レジアイス',registeel:'レジスチル',latias:'ラティアス',latios:'ラティオス',kyogre:'カイオーガ',groudon:'グラードン',rayquaza:'レックウザ',jirachi:'ジラーチ',deoxys:'デオキシス',
-  turtwig:'ナエトル',grotle:'ハヤシガメ',torterra:'ドダイトス',chimchar:'ヒコザル',monferno:'モウカザル',infernape:'ゴウカザル',piplup:'ポッチャマ',prinplup:'ポッタイシ',empoleon:'エンペルト',starly:'ムックル',staravia:'ムクバード',staraptor:'ムクホーク',bidoof:'ビッパ',bibarel:'ビーダル',kricketot:'コロボーシ',kricketune:'コロトック',shinx:'コリンク',luxio:'ルクシオ',luxray:'レントラー',budew:'スボミー',roserade:'ロズレイド',cranidos:'ズガイドス',rampardos:'ラムパルド',shieldon:'タテトプス',bastiodon:'トリデプス',burmy:'ミノムッチ',wormadam:'ミノマダム',mothim:'ガーメイル',combee:'ミツハニー',vespiquen:'ビークイン',pachirisu:'パチリス',buizel:'ブイゼル',floatzel:'フローゼル',cherubi:'チェリンボ',cherrim:'チェリム',shellos:'カラナクシ',gastrodon:'トリトドン',ambipom:'エテボース',drifloon:'フワンテ',drifblim:'フワライド',buneary:'ミミロル',lopunny:'ミミロップ',mismagius:'ムウマージ',honchkrow:'ドンカラス',glameow:'ニャルマー',purugly:'ブニャット',chingling:'リーシャン',stunky:'スカンプー',skuntank:'スカタンク',bronzor:'ドーミラー',bronzong:'ドータクン',bonsly:'ウソハチ','mime-jr':'マネネ',happiny:'ピンプク',chatot:'ペラップ',spiritomb:'ミカルゲ',gible:'フカマル',gabite:'ガバイト',garchomp:'ガブリアス',munchlax:'ゴンベ',riolu:'リオル',lucario:'ルカリオ',hippopotas:'ヒポポタス',hippowdon:'カバルドン',skorupi:'スコルピ',drapion:'ドラピオン',croagunk:'グレッグル',toxicroak:'ドクロッグ',carnivine:'マスキッパ',finneon:'ケイコウオ',lumineon:'ネオラント',mantyke:'タマンタ',snover:'ユキカブリ',abomasnow:'ユキノオー',weavile:'マニューラ',magnezone:'ジバコイル',lickilicky:'ベロベルト',rhyperior:'ドサイドン',tangrowth:'モジャンボ',electivire:'エレキブル',magmortar:'ブーバーン',togekiss:'トゲキッス',yanmega:'メガヤンマ',leafeon:'リーフィア',glaceon:'グレイシア',gliscor:'グライオン',mamoswine:'マンムー','porygon-z':'ポリゴンZ',gallade:'エルレイド',probopass:'ダイノーズ',dusknoir:'ヨノワール',froslass:'ユキメノコ',rotom:'ロトム',uxie:'ユクシー',mesprit:'エムリット',azelf:'アグノム',dialga:'ディアルガ',palkia:'パルキア',heatran:'ヒードラン',regigigas:'レジギガス',giratina:'ギラティナ',cresselia:'クレセリア',phione:'フィオネ',manaphy:'マナフィ',darkrai:'ダークライ',shaymin:'シェイミ',arceus:'アルセウス',
-  victini:'ビクティニ',snivy:'ツタージャ',servine:'ジャノビー',serperior:'ジャローダ',tepig:'ポカブ',pignite:'チャオブー',emboar:'エンブオー',oshawott:'ミジュマル',dewott:'フタチマル',samurott:'ダイケンキ',patrat:'ミネズミ',watchog:'ミルホッグ',lillipup:'ヨーテリー',herdier:'ハーデリア',stoutland:'ムーランド',purrloin:'チョロネコ',liepard:'レパルダス',pansage:'ヤナップ',simisage:'ヤナッキー',pansear:'バオップ',simisear:'バオッキー',panpour:'ヒヤップ',simipour:'ヒヤッキー',munna:'ムンナ',musharna:'ムシャーナ',pidove:'マメパト',tranquill:'ハトーボー',unfezant:'ケンホロウ',blitzle:'シママ',zebstrika:'ゼブライカ',roggenrola:'ダンゴロ',boldore:'ガントル',gigalith:'ギガイアス',woobat:'コロモリ',swoobat:'ココロモリ',drilbur:'モグリュー',excadrill:'ドリュウズ',audino:'タブンネ',timburr:'ドッコラー',gurdurr:'ドテッコツ',conkeldurr:'ローブシン',tympole:'タマゲタケ',palpitoad:'ガマガル',seismitoad:'ガマゲロゲ',throh:'ナゲキ',sawk:'ダゲキ',sewaddle:'クルミル',swadloon:'クルマユ',leavanny:'ハハコモリ',venipede:'フシデ',whirlipede:'ホイーガ',scolipede:'ペンドラー',cottonee:'モンメン',whimsicott:'エルフーン',petilil:'チュリネ',lilligant:'ドレディア',basculin:'バスラオ',sandile:'メグロコ',krokorok:'ワルビル',krookodile:'ワルビアル',darumaka:'ダルマッカ',darmanitan:'ヒヒダルマ',maractus:'マラカッチ',dwebble:'イシズマイ',crustle:'イワパレス',scraggy:'ズルッグ',scrafty:'ズルズキン',sigilyph:'デシアン',yamask:'デスマス',cofagrigus:'デスカーン',tirtouga:'プロトーガ',carracosta:'アバゴーラ',archen:'アーケン',archeops:'アーケオス',trubbish:'ヤブクロン',garbodor:'ダストダス',zorua:'ゾロア',zoroark:'ゾロアーク',minccino:'チラーミィ',cinccino:'チラチーノ',gothita:'ゴチム',gothorita:'ゴチミル',gothitelle:'ゴチルゼル',solosis:'ユニラン',duosion:'ダブラン',reuniclus:'ランクルス',ducklett:'コアルヒー',swanna:'スワンナ',vanillite:'バニプッチ',vanillish:'バニリッチ',vanilluxe:'バイバニラ',deerling:'シキジカ',sawsbuck:'メブキジカ',emolga:'エモンガ',karrablast:'カブルモ',escavalier:'シュバルゴ',foongus:'フシデ',amoonguss:'モロバレル',frillish:'プルリル',jellicent:'ブルンゲル',alomomola:'ママンボウ',joltik:'バチュル',galvantula:'デンチュラ',ferroseed:'テッシード',ferrothorn:'ナットレイ',klink:'ギアル',klang:'ギギアル',klinklang:'ギギギアル',tynamo:'シビシラス',eelektrik:'シビビール',eelektross:'シビルドン',elgyem:'リグレー',beheeyem:'オーベム',litwick:'ヒトモシ',lampent:'ランプラー',chandelure:'シャンデラ',axew:'キバゴ',fraxure:'オノンド',haxorus:'オノノクス',cubchoo:'クマシュン',beartic:'ツンベアー',cryogonal:'フリージオ',shelmet:'チョボマキ',accelgor:'アギルダー',stunfisk:'マッギョ',mienfoo:'コジョフー',mienshao:'コジョンド',druddigon:'クリムガン',golett:'ゴビット',golurk:'ゴルーグ',pawniard:'コマタナ',bisharp:'キリキザン',bouffalant:'バッフロン',rufflet:'ワシボン',braviary:'ウォーグル',vullaby:'バルチャイ',mandibuzz:'バルジーナ',heatmor:'クイタラン',durant:'アイアント',deino:'モノズ',zweilous:'ジヘッド',hydreigon:'サザンドラ',larvesta:'メラルバ',volcarona:'ウルガモス',cobalion:'コバルオン',terrakion:'テラキオン',virizion:'ビリジオン',tornadus:'トルネロス',thundurus:'ボルトロス',reshiram:'レシラム',zekrom:'ゼクロム',landorus:'ランドロス',kyurem:'キュレム',keldeo:'ケルディオ',meloetta:'メロエッタ',genesect:'ゲノセクト',
-  chespin:'ハリマロン',quilladin:'ハリボーグ',chesnaught:'ブリガロン',fennekin:'フォッコ',braixen:'テールナー',delphox:'マフォクシー',froakie:'ケロマツ',frogadier:'ゲコガシラ',greninja:'ゲッコウガ',bunnelby:'ホルビー',diggersby:'ホルード',fletchling:'ヤヤコマ',fletchinder:'ヒノヤコマ',talonflame:'ファイアロー',scatterbug:'コフキムシ',spewpa:'コフーライ',vivillon:'ビビヨン',litleo:'シシコ',pyroar:'カエンジシ',flabebe:'フラベベ',floette:'フラエッテ',florges:'フラージェス',skiddo:'メェークル',gogoat:'ゴーゴート',pancham:'ヤンチャム',pangoro:'ゴロンダ',furfrou:'トリミアン',espurr:'ニャスパー',meowstic:'ニャオニクス',honedge:'ヒトツキ',doublade:'ニダンギル',aegislash:'ギルガルド',spritzee:'シュシュプ',aromatisse:'フレフワン',swirlix:'ペロッパフ',slurpuff:'ペロリーム',inkay:'マーイーカ',malamar:'カラマネロ',binacle:'カメテテ',barbaracle:'ガメノデス',skrelp:'クズモー',dragalge:'ドラミドロ',clauncher:'ウデッポウ',clawitzer:'ブロスター',helioptile:'エリキテル',heliolisk:'エレザード',tyrunt:'チゴラス',tyrantrum:'ガチゴラス',amaura:'アマルス',aurorus:'アマルルガ',sylveon:'ニンフィア',hawlucha:'ルチャブル',dedenne:'デデンネ',carbink:'メレシー',goomy:'ヌメラ',sliggoo:'ヌメイル',goodra:'ヌメルゴン',klefki:'クレッフィ',phantump:'ボクレー',trevenant:'オーロット',pumpkaboo:'バケッチャ',gourgeist:'パンプジン',bergmite:'カチコール',avalugg:'クレベース',noibat:'オンバット',noivern:'オンバーン',xerneas:'ゼルネアス',yveltal:'イベルタル',zygarde:'ジガルデ',diancie:'ディアンシー',hoopa:'フーパ',volcanion:'ボルケニオン',
-  rowlet:'モクロー',dartrix:'フクスロー',decidueye:'ジュナイパー',litten:'ニャビー',torracat:'ニャヒート',incineroar:'ガオガエン',popplio:'アシマリ',brionne:'オシャマリ',primarina:'アシレーヌ',pikipek:'ツツケラ',trumbeak:'ケララッパ',toucannon:'ドデカバシ',yungoos:'ヤングース',gumshoos:'デカグース',grubbin:'アゴジムシ',charjabug:'デンヂムシ',vikavolt:'クワガノン',crabrawler:'マケンカニ',crabominable:'ケケンカニ',oricorio:'オドリドリ',cutiefly:'アブリー',ribombee:'アブリボン',rockruff:'イワンコ',lycanroc:'ルガルガン',wishiwashi:'ヨワシ',mareanie:'ヒドイデ',toxapex:'ドヒドイデ',mudbray:'ドロバンコ',mudsdale:'バンバドロ',dewpider:'シズクモ',araquanid:'オニシズクモ',fomantis:'カリキリ',lurantis:'ラランテス',morelull:'ネマシュ',shiinotic:'マシェード',salandit:'ヤトウモリ',salazzle:'エンニュート',stufful:'ヌイコグマ',bewear:'キテルグマ',bounsweet:'アマカジ',steenee:'アママイコ',tsareena:'アマージョ',comfey:'キュワワー',oranguru:'ナゲツケサル',passimian:'ヤレユータン',wimpod:'コソクムシ',golisopod:'グソクムシャ',sandygast:'スナバァ',palossand:'シロデスナ',pyukumuku:'ナマコブシ',minior:'メテノ',komala:'ネッコアラ',turtonator:'バクガメス',togedemaru:'トゲデマル',mimikyu:'ミミッキュ',bruxish:'ハギギシリ',drampa:'ジジーロン',dhelmise:'ダダリン','jangmo-o':'ジャラコ','hakamo-o':'ジャランゴ','kommo-o':'ジャラランガ','tapu-koko':'カプ・コケコ','tapu-lele':'カプ・テテフ','tapu-bulu':'カプ・ブルル','tapu-fini':'カプ・レヒレ',cosmog:'コスモッグ',cosmoem:'コスモウム',solgaleo:'ソルガレオ',lunala:'ルナアーラ',nihilego:'ニルギリ',buzzwole:'マッシブーン',pheromosa:'フェローチェ',xurkitree:'デンジュモク',celesteela:'テッカグヤ',kartana:'カミツルギ',guzzlord:'アクジキング',necrozma:'ネクロズマ',magearna:'マギアナ',marshadow:'マーシャドー',poipole:'ベベノム',naganadel:'アーゴヨン',stakataka:'ツンデツンデ',blacephalon:'ズガドーン',zeraora:'ゼラオラ',meltan:'メルタン',melmetal:'メルメタル',
-  grookey:'サルノリ',thwackey:'バチンキー',rillaboom:'ゴリランダー',scorbunny:'ヒバニー',raboot:'ラビフット',cinderace:'エースバーン',sobble:'メッソン',drizzile:'ジメレオン',inteleon:'インテレオン',skwovet:'ホシガリス',greedent:'ヨクバリス',rookidee:'ツブツブコ',corvisquire:'アイアントン',corviknight:'アーマーガア',blipbug:'サッチムシ',dottler:'レドームシ',orbeetle:'イオルブ',nickit:'クスネ',thievul:'フォクスライ',gossifleur:'ヒメンカ',eldegoss:'ワタシラガ',wooloo:'ウールー',dubwool:'バリコオル',chewtle:'カムカメ',drednaw:'カジリガメ',yamper:'ワンパチ',boltund:'パルスワン',rolycoly:'タンドン',carkol:'トロッゴン',coalossal:'セキタンザン',applin:'アップリュー',flapple:'アップルパイ',appletun:'タルップル',silicobra:'サダイジャ',sandaconda:'ウォーグル',cramorant:'ウッウ',arrokuda:'サシカマス',barraskewda:'カマスジョー',toxel:'エレズン',toxtricity:'ストリンデル',sizzlipede:'ヤクデ',centiskorch:'マルヤクデ',clobbopus:'タタッコ',grapploct:'オトスパス',sinistea:'ヤバチャ',polteageist:'ポットデス',hatenna:'ミブリム',hattrem:'テブリム',hatterene:'ブリムオン',impidimp:'ベロバー',morgrem:'ギモー',grimmsnarl:'オーロンゲ',obstagoon:'タチフサグマ',perrserker:'ニャイキング',cursola:'サニゴーン',sirfetchd:'ネギガナイト','mr-rime':'バリコオル',runerigus:'デスバーン',milcery:'マホミル',alcremie:'マホイップ',falinks:'タイレーツ',pincurchin:'バチンウニ',snom:'ユキハミ',frosmoth:'モスノウ',stonjourner:'イシヘンジン',eiscue:'コオリッポ',indeedee:'イエッサン',morpeko:'モルペコ',cufant:'ゾウドウ',copperajah:'ダイオウドウ',dracozolt:'パッチラゴン',arctozolt:'パッチルドン',dracovish:'ウオチルドン',arctovish:'ウオノラゴン',duraludon:'ジュラルドン',dreepy:'ドラメシヤ',drakloak:'ドロンチ',dragapult:'ドラパルト',zacian:'ザシアン',zamazenta:'ザマゼンタ',eternatus:'ムゲンダイナ',kubfu:'ダクマ',urshifu:'ウーラオス',zarude:'ザルード',regieleki:'レジエレキ',regidrago:'レジドラゴ',glastrier:'ブリザポス',spectrier:'レイスポス',calyrex:'バドレックス',wyrdeer:'シンオウジカ',kleavor:'バサギリ',ursaluna:'ガチグマ',basculegion:'バサオウ',sneasler:'ニューラ',overqwil:'ハリーマン',enamorus:'エナモリ',
-  sprigatito:'ニャオハ',floragato:'ニャローテ',meowscarada:'マスカーニャ',fuecoco:'ホゲータ',crocalor:'アチゲータ',skeledirge:'ラウドボーン',quaxly:'クワッス',quaxwell:'ウェルカモ',quaquaval:'ウェーニバル',lechonk:'イキリンコ',oinkologne:'イキリンコ',tarountula:'タマンチュラ',spidops:'ワナイダー',nymble:'バグリー',lokix:'エクスレッグ',pawmi:'パモ',pawmo:'パモット',pawmot:'パーモット',tandemaus:'イッカネズミ',maushold:'イッカネズミ',fidough:'パフュートン',dachsbun:'パフュードン',smoliv:'オリーニョ',dolliv:'オリーバ',arboliva:'オリーニョ',squawkabilly:'イキリンコ',nacli:'シオカラス',naclstack:'シオカラス',garganacl:'シオカラス',charcadet:'カルボウ',armarouge:'グレンアルマ',ceruledge:'ソウブレイズ',tadbulb:'タドツボ',bellibolt:'エレコブラ',wattrel:'カイデン',kilowattrel:'カイデン',maschiff:'マフォクシー',mabosstiff:'ペパー',shroodle:'リキキリ',grafaiai:'リキキリ',bramblin:'ドンブリメン',brambleghast:'ドンブリメン',toedscool:'ノノクラゲ',toedscruel:'ドクノクラゲ',klawf:'ガケガニ',capsakid:'カラミンゴ',scovillain:'カラミンゴ',rellor:'コロトック',rabsca:'コロトック',flittle:'フリッジョ',espathra:'サーフゴー',tinkatink:'テツノカイナ',tinkatuff:'テツノカイナ',tinkaton:'テツノカイナ',wiglett:'ウミディグダ',wugtrio:'ウミトリオ',bombirdier:'イキリンコ',finizen:'イルカマン',palafin:'イルカマン',varoom:'ジェットヤドラン',revavroom:'ジェットヤドラン',cyclizar:'ドンドン',orthworm:'ミミズズ',glimmet:'キラーメ',glimmora:'キラフロル',greavard:'ハロウボック',houndstone:'ハロウボック',flamigo:'フラミジョー',cetoddle:'タケルライコ',cetitan:'タケルライコ',veluza:'シャリタツ',dondozo:'ヘイラッシャ',tatsugiri:'シャリタツ',annihilape:'コノヨザル',clodsire:'ドオー',farigiraf:'イイネイヌ',dudunsparce:'ノコッチ',kingambit:'セグレイブ',frigibax:'セビエ',arctibax:'セゴール',baxcalibur:'セグレイブ',gimmighoul:'コレクレー',gholdengo:'サーフゴー','wo-chien':'イイネイヌ','chien-pao':'サケブシッポ','ting-lu':'マシマシラ','chi-yu':'カイデン','roaring-moon':'テツノカシラ','iron-valiant':'テツノブジン',koraidon:'コライドン',miraidon:'ミライドン','walking-wake':'ウォーキングウェイク','iron-leaves':'テツノイブキ',dipplin:'ドロバンコ',poltchageist:'ポットデス',sinistcha:'ヤバチャ',okidogi:'テツノカシラ',munkidori:'テツノカシラ',fezandipiti:'テツノカシラ',ogerpon:'オーガポン',archaludon:'テツノカシラ',hydrapple:'テツノカシラ',terapagos:'テラパゴス',pecharunt:'ペチャム',
-};
-
-function getJP(name) {
-  if (JP[name]) return JP[name];
-  const clean = name.replace(/-/g,'');
-  if (JP[clean]) return JP[clean];
-  const base = name.split('-')[0];
-  if (JP[base]) return JP[base];
-  return null;
+function switchTab(tab){
+  ['zukan','compat','matrix'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===tab?'block':'none';
+    document.getElementById('btn-'+t).classList.toggle('active',t===tab);
+  });
+  if(tab==='matrix')buildMatrix();
 }
 
-let currentGen = null;
-let pokeData = [];
-let flippedSet = new Set();
-let loadingAbort = false;
-
-function buildGenSelector() {
-  const sel = document.getElementById('gen-selector');
-  GENERATIONS.forEach((g, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'gen-btn';
-    btn.id = 'gbtn-' + i;
-    btn.textContent = g.label;
-    btn.onclick = () => selectGen(i);
-    sel.appendChild(btn);
+/* タイプ相性 */
+let selTypes=[];
+function buildTypeSel(){
+  const g=document.getElementById('type-sel-grid');
+  TYPES.forEach(t=>{
+    const c=TC[t],btn=document.createElement('button');
+    btn.className='type-sel-btn';btn.id='ts-'+t;btn.textContent=TJ[t];
+    btn.style.background=c.bg;btn.style.color=c.text;
+    btn.onclick=()=>toggleTS(t);g.appendChild(btn);
   });
 }
+function toggleTS(t){
+  if(selTypes.includes(t)){selTypes=selTypes.filter(x=>x!==t);}
+  else{if(selTypes.length>=2){const r=selTypes.shift();document.getElementById('ts-'+r).classList.remove('selected');}selTypes.push(t);}
+  document.getElementById('ts-'+t).classList.toggle('selected',selTypes.includes(t));
+  renderCompat();
+}
+function renderCompat(){
+  const area=document.getElementById('compat-result');
+  if(!selTypes.length){area.innerHTML='';return;}
+  const mults=defMult(selTypes);
+  const g={'4':[],'2':[],'0.5':[],'0.25':[],'0':[]};
+  TYPES.forEach(t=>{const m=mults[t];if(m===4)g['4'].push(t);else if(m===2)g['2'].push(t);else if(m===0.5)g['0.5'].push(t);else if(m===0.25)g['0.25'].push(t);else if(m===0)g['0'].push(t);});
+  const selBadges=selTypes.map(t=>'<span class="type-badge" style="background:'+TC[t].bg+';color:'+TC[t].text+'">'+TJ[t]+'</span>').join(' + ');
+  let html='<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">'+selBadges+'<span style="font-size:13px;color:#888;margin-left:4px;">タイプへの相性</span></div>';
+  [{key:'4',label:'×4 弱点（4倍）',color:'#cc0000'},{key:'2',label:'×2 弱点',color:'#ee6600'},{key:'0.5',label:'×½ 半減',color:'#228822'},{key:'0.25',label:'×¼ 1/4軽減',color:'#116611'},{key:'0',label:'×0 無効',color:'#444'}].forEach(d=>{
+    if(!g[d.key].length)return;
+    html+='<div class="compat-box"><h3 style="color:'+d.color+'">'+d.label+'</h3><div style="display:flex;flex-wrap:wrap;gap:4px;">';
+    g[d.key].forEach(t=>{html+='<span class="type-badge" style="background:'+TC[t].bg+';color:'+TC[t].text+'">'+TJ[t]+'</span>';});
+    html+='</div></div>';
+  });
+  area.innerHTML=html;
+}
 
-async function selectGen(idx) {
-  if (currentGen === idx) return;
-  loadingAbort = true;
-  await new Promise(r => setTimeout(r, 50));
-  loadingAbort = false;
-  currentGen = idx;
+/* マトリクス */
+let matDone=false;
+function buildMatrix(){
+  if(matDone)return;matDone=true;
+  const w=document.getElementById('matrix-wrap');
+  let h='<table class="mtable"><thead><tr><th style="width:40px"></th>';
+  TYPES.forEach(t=>{const c=TC[t];h+='<th><div class="vlabel" style="background:'+c.bg+';color:'+c.text+';border-radius:3px;">'+TJ[t]+'</div></th>';});
+  h+='</tr></thead><tbody>';
+  TYPES.forEach(def=>{
+    const c=TC[def];
+    h+='<tr><th style="text-align:right;padding-right:3px;"><span style="background:'+c.bg+';color:'+c.text+';padding:1px 5px;border-radius:3px;font-size:10px;white-space:nowrap;">'+TJ[def]+'</span></th>';
+    TYPES.forEach(atk=>{
+      const m=ga(atk,def);
+      let cls='',label='';
+      if(m===2){cls='m2';label='2';}else if(m===0.5){cls='mh';label='½';}else if(m===0.25){cls='mq';label='¼';}else if(m===0){cls='mz';label='0';}
+      h+='<td class="'+cls+'">'+label+'</td>';
+    });
+    h+='</tr>';
+  });
+  h+='</tbody></table>';
+  w.innerHTML=h;
+}
 
-  document.querySelectorAll('.gen-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+/* 図鑑 */
+const JP={bulbasaur:'フシギダネ',ivysaur:'フシギソウ',venusaur:'フシギバナ',charmander:'ヒトカゲ',charmeleon:'リザード',charizard:'リザードン',squirtle:'ゼニガメ',wartortle:'カメール',blastoise:'カメックス',caterpie:'キャタピー',metapod:'トランセル',butterfree:'バタフリー',weedle:'ビードル',kakuna:'コクーン',beedrill:'スピアー',pidgey:'ポッポ',pidgeotto:'ピジョン',pidgeot:'ピジョット',rattata:'コラッタ',raticate:'ラッタ',spearow:'オニスズメ',fearow:'オニドリル',ekans:'アーボ',arbok:'アーボック',pikachu:'ピカチュウ',raichu:'ライチュウ',sandshrew:'サンド',sandslash:'サンドパン','nidoran-f':'ニドラン♀',nidorina:'ニドリーナ',nidoqueen:'ニドクイン','nidoran-m':'ニドラン♂',nidorino:'ニドリーノ',nidoking:'ニドキング',clefairy:'ピッピ',clefable:'ピクシー',vulpix:'ロコン',ninetales:'キュウコン',jigglypuff:'プリン',wigglytuff:'プクリン',zubat:'ズバット',golbat:'ゴルバット',oddish:'ナゾノクサ',gloom:'クサイハナ',vileplume:'ラフレシア',paras:'パラス',parasect:'パラセクト',venonat:'コンパン',venomoth:'モルフォン',diglett:'ディグダ',dugtrio:'ダグトリオ',meowth:'ニャース',persian:'ペルシアン',psyduck:'コダック',golduck:'ゴルダック',mankey:'マンキー',primeape:'オコリザル',growlithe:'ガーディ',arcanine:'ウインディ',poliwag:'ニョロモ',poliwhirl:'ニョロゾ',poliwrath:'ニョロボン',abra:'ケーシィ',kadabra:'ユンゲラー',alakazam:'フーディン',machop:'ワンリキー',machoke:'ゴーリキー',machamp:'カイリキー',bellsprout:'マダツボミ',weepinbell:'ウツドン',victreebel:'ウツボット',tentacool:'メノクラゲ',tentacruel:'ドククラゲ',geodude:'イシツブテ',graveler:'ゴローン',golem:'ゴローニャ',ponyta:'ポニータ',rapidash:'ギャロップ',slowpoke:'ヤドン',slowbro:'ヤドラン',magnemite:'コイル',magneton:'レアコイル',farfetchd:'カモネギ',doduo:'ドードー',dodrio:'ドードリオ',seel:'パウワウ',dewgong:'ジュゴン',grimer:'ベトベター',muk:'ベトベトン',shellder:'シェルダー',cloyster:'パルシェン',gastly:'ゴース',haunter:'ゴースト',gengar:'ゲンガー',onix:'イワーク',drowzee:'スリープ',hypno:'スリーパー',krabby:'クラブ',kingler:'キングラー',voltorb:'ビリリダマ',electrode:'マルマイン',exeggcute:'タマタマ',exeggutor:'ナッシー',cubone:'カラカラ',marowak:'ガラガラ',hitmonlee:'サワムラー',hitmonchan:'エビワラー',lickitung:'ベロリンガ',koffing:'ドガース',weezing:'マタドガス',rhyhorn:'サイホーン',rhydon:'サイドン',chansey:'ラッキー',tangela:'モンジャラ',kangaskhan:'ガルーラ',horsea:'タッツー',seadra:'シードラ',goldeen:'トサキント',seaking:'アズマオウ',staryu:'ヒトデマン',starmie:'スターミー','mr-mime':'バリヤード',scyther:'ストライク',jynx:'ルージュラ',electabuzz:'エレブー',magmar:'ブーバー',pinsir:'カイロス',tauros:'ケンタロス',magikarp:'コイキング',gyarados:'ギャラドス',lapras:'ラプラス',ditto:'メタモン',eevee:'イーブイ',vaporeon:'シャワーズ',jolteon:'サンダース',flareon:'ブースター',porygon:'ポリゴン',omanyte:'オムナイト',omastar:'オムスター',kabuto:'カブト',kabutops:'カブトプス',aerodactyl:'プテラ',snorlax:'カビゴン',articuno:'フリーザー',zapdos:'サンダー',moltres:'ファイヤー',dratini:'ミニリュウ',dragonair:'ハクリュー',dragonite:'カイリュー',mewtwo:'ミュウツー',mew:'ミュウ',chikorita:'チコリータ',bayleef:'ベイリーフ',meganium:'メガニウム',cyndaquil:'ヒノアラシ',quilava:'マグマラシ',typhlosion:'バクフーン',totodile:'ワニノコ',croconaw:'アリゲイツ',feraligatr:'オーダイル',sentret:'オタチ',furret:'オオタチ',hoothoot:'ホーホー',noctowl:'ヨルノズク',ledyba:'レディバ',ledian:'レディアン',spinarak:'イトマル',ariados:'アリアドス',crobat:'クロバット',chinchou:'チョンチー',lanturn:'ランターン',pichu:'ピチュー',cleffa:'ピィ',igglybuff:'ププリン',togepi:'トゲピー',togetic:'トゲチック',natu:'ネイティ',xatu:'ネイティオ',mareep:'メリープ',flaaffy:'モコシープ',ampharos:'デンリュウ',bellossom:'キレイハナ',marill:'マリル',azumarill:'マリルリ',sudowoodo:'ウソッキー',politoed:'ニョロトノ',hoppip:'ハネッコ',skiploom:'ポポッコ',jumpluff:'ワタッコ',aipom:'エイパム',sunkern:'ヒマナッツ',sunflora:'キマワリ',yanma:'ヤンヤンマ',wooper:'ウパー',quagsire:'ヌオー',espeon:'エーフィ',umbreon:'ブラッキー',murkrow:'ヤミカラス',slowking:'ヤドキング',misdreavus:'ムウマ',unown:'アンノーン',wobbuffet:'ソーナンス',girafarig:'キリンリキ',pineco:'クヌギダマ',forretress:'フォレトス',dunsparce:'ノコッチ',gligar:'グライガー',steelix:'ハガネール',snubbull:'ブルー',granbull:'グランブル',qwilfish:'ハリーセン',scizor:'ハッサム',shuckle:'ツボツボ',heracross:'ヘラクロス',sneasel:'ニューラ',teddiursa:'ヒメグマ',ursaring:'リングマ',slugma:'マグマッグ',magcargo:'マグカルゴ',swinub:'ウリムー',piloswine:'イノムー',corsola:'サニーゴ',remoraid:'テッポウオ',octillery:'オクタン',delibird:'デリバード',mantine:'マンタイン',skarmory:'エアームド',houndour:'デルビル',houndoom:'ヘルガー',kingdra:'キングドラ',phanpy:'ゴマゾウ',donphan:'ドンファン',porygon2:'ポリゴン2',stantler:'オドシシ',smeargle:'ドーブル',tyrogue:'バルキー',hitmontop:'カポエラー',smoochum:'ムチュール',elekid:'エレキッド',magby:'ブビィ',miltank:'ミルタンク',blissey:'ハピナス',raikou:'ライコウ',entei:'エンテイ',suicune:'スイクン',larvitar:'ヨーギラス',pupitar:'サナギラス',tyranitar:'バンギラス',lugia:'ルギア','ho-oh':'ホウオウ',celebi:'セレビィ',treecko:'キモリ',grovyle:'ジュプトル',sceptile:'ジュカイン',torchic:'アチャモ',combusken:'ワカシャモ',blaziken:'バシャーモ',mudkip:'ミズゴロウ',marshtomp:'ヌマクロー',swampert:'ラグラージ',poochyena:'ポチエナ',mightyena:'グラエナ',zigzagoon:'ジグザグマ',linoone:'マッスグマ',wurmple:'ケムッソ',silcoon:'カラサリス',beautifly:'アゲハント',cascoon:'マユルド',dustox:'ドクケイル',lotad:'ハスボー',lombre:'ハスブレロ',ludicolo:'ルンパッパ',seedot:'タネボー',nuzleaf:'コノハナ',shiftry:'ダーテング',taillow:'スバメ',swellow:'オオスバメ',wingull:'キャモメ',pelipper:'ペリッパー',ralts:'ラルトス',kirlia:'キルリア',gardevoir:'サーナイト',surskit:'アメタマ',masquerain:'アメモース',shroomish:'キノコ',breloom:'キノガッサ',slakoth:'ナマケロ',vigoroth:'ヤルキモノ',slaking:'ケッキング',nincada:'ツチニン',ninjask:'テッカニン',shedinja:'ヌケニン',whismur:'ゴニョニョ',loudred:'ドゴーム',exploud:'バクオング',makuhita:'マクノシタ',hariyama:'ハリテヤマ',azurill:'ルリリ',nosepass:'ノズパス',skitty:'エネコ',delcatty:'エネコロロ',sableye:'ヤミラミ',mawile:'クチート',aron:'ココドラ',lairon:'コドラ',aggron:'ボスゴドラ',meditite:'アサナン',medicham:'チャーレム',electrike:'ラクライ',manectric:'ライボルト',plusle:'プラスル',minun:'マイナン',volbeat:'バルビート',illumise:'イルミーゼ',roselia:'ロゼリア',gulpin:'ゴクリン',swalot:'マルノーム',carvanha:'キバニア',sharpedo:'サメハダー',wailmer:'ホエルコ',wailord:'ホエルオー',numel:'ドンメル',camerupt:'バクーダ',torkoal:'コータス',spoink:'バネブー',grumpig:'ブーピッグ',spinda:'パッチール',trapinch:'ナックラー',vibrava:'ビブラーバ',flygon:'フライゴン',cacnea:'サボネア',cacturne:'ノクタス',swablu:'チルット',altaria:'チルタリス',zangoose:'ザングース',seviper:'ハブネーク',lunatone:'ルナトーン',solrock:'ソルロック',barboach:'ドジョッチ',whiscash:'ナマズン',corphish:'ヘイガニ',crawdaunt:'シザリガー',baltoy:'ヤジロン',claydol:'ネンドール',lileep:'リリーラ',cradily:'ユレイドル',anorith:'アノプス',armaldo:'アーマルド',feebas:'ヒンバス',milotic:'ミロカロス',castform:'ポワルン',kecleon:'カクレオン',shuppet:'カゲボウズ',banette:'ジュペッタ',duskull:'ヨマワル',dusclops:'サマヨール',tropius:'トロピウス',chimecho:'チリーン',absol:'アブソル',wynaut:'ソーナノ',snorunt:'ユキワラシ',glalie:'オニゴーリ',spheal:'タマザラシ',sealeo:'トドグラー',walrein:'トドゼルガ',clamperl:'パールル',huntail:'ハンテール',gorebyss:'サクラビス',relicanth:'ジーランス',luvdisc:'ラブカス',bagon:'タツベイ',shelgon:'コモルー',salamence:'ボーマンダ',beldum:'ダンバル',metang:'メタング',metagross:'メタグロス',regirock:'レジロック',regice:'レジアイス',registeel:'レジスチル',latias:'ラティアス',latios:'ラティオス',kyogre:'カイオーガ',groudon:'グラードン',rayquaza:'レックウザ',jirachi:'ジラーチ',deoxys:'デオキシス',turtwig:'ナエトル',grotle:'ハヤシガメ',torterra:'ドダイトス',chimchar:'ヒコザル',monferno:'モウカザル',infernape:'ゴウカザル',piplup:'ポッチャマ',prinplup:'ポッタイシ',empoleon:'エンペルト',starly:'ムックル',staravia:'ムクバード',staraptor:'ムクホーク',bidoof:'ビッパ',bibarel:'ビーダル',kricketot:'コロボーシ',kricketune:'コロトック',shinx:'コリンク',luxio:'ルクシオ',luxray:'レントラー',budew:'スボミー',roserade:'ロズレイド',cranidos:'ズガイドス',rampardos:'ラムパルド',shieldon:'タテトプス',bastiodon:'トリデプス',burmy:'ミノムッチ',wormadam:'ミノマダム',mothim:'ガーメイル',combee:'ミツハニー',vespiquen:'ビークイン',pachirisu:'パチリス',buizel:'ブイゼル',floatzel:'フローゼル',cherubi:'チェリンボ',cherrim:'チェリム',shellos:'カラナクシ',gastrodon:'トリトドン',ambipom:'エテボース',drifloon:'フワンテ',drifblim:'フワライド',buneary:'ミミロル',lopunny:'ミミロップ',mismagius:'ムウマージ',honchkrow:'ドンカラス',glameow:'ニャルマー',purugly:'ブニャット',chingling:'リーシャン',stunky:'スカンプー',skuntank:'スカタンク',bronzor:'ドーミラー',bronzong:'ドータクン',bonsly:'ウソハチ','mime-jr':'マネネ',happiny:'ピンプク',chatot:'ペラップ',spiritomb:'ミカルゲ',gible:'フカマル',gabite:'ガバイト',garchomp:'ガブリアス',munchlax:'ゴンベ',riolu:'リオル',lucario:'ルカリオ',hippopotas:'ヒポポタス',hippowdon:'カバルドン',skorupi:'スコルピ',drapion:'ドラピオン',croagunk:'グレッグル',toxicroak:'ドクロッグ',carnivine:'マスキッパ',finneon:'ケイコウオ',lumineon:'ネオラント',mantyke:'タマンタ',snover:'ユキカブリ',abomasnow:'ユキノオー',weavile:'マニューラ',magnezone:'ジバコイル',lickilicky:'ベロベルト',rhyperior:'ドサイドン',tangrowth:'モジャンボ',electivire:'エレキブル',magmortar:'ブーバーン',togekiss:'トゲキッス',yanmega:'メガヤンマ',leafeon:'リーフィア',glaceon:'グレイシア',gliscor:'グライオン',mamoswine:'マンムー','porygon-z':'ポリゴンZ',gallade:'エルレイド',probopass:'ダイノーズ',dusknoir:'ヨノワール',froslass:'ユキメノコ',rotom:'ロトム',uxie:'ユクシー',mesprit:'エムリット',azelf:'アグノム',dialga:'ディアルガ',palkia:'パルキア',heatran:'ヒードラン',regigigas:'レジギガス',giratina:'ギラティナ',cresselia:'クレセリア',phione:'フィオネ',manaphy:'マナフィ',darkrai:'ダークライ',shaymin:'シェイミ',arceus:'アルセウス',victini:'ビクティニ',snivy:'ツタージャ',servine:'ジャノビー',serperior:'ジャローダ',tepig:'ポカブ',pignite:'チャオブー',emboar:'エンブオー',oshawott:'ミジュマル',dewott:'フタチマル',samurott:'ダイケンキ',patrat:'ミネズミ',watchog:'ミルホッグ',lillipup:'ヨーテリー',herdier:'ハーデリア',stoutland:'ムーランド',purrloin:'チョロネコ',liepard:'レパルダス',pansage:'ヤナップ',simisage:'ヤナッキー',pansear:'バオップ',simisear:'バオッキー',panpour:'ヒヤップ',simipour:'ヒヤッキー',munna:'ムンナ',musharna:'ムシャーナ',pidove:'マメパト',tranquill:'ハトーボー',unfezant:'ケンホロウ',blitzle:'シママ',zebstrika:'ゼブライカ',roggenrola:'ダンゴロ',boldore:'ガントル',gigalith:'ギガイアス',woobat:'コロモリ',swoobat:'ココロモリ',drilbur:'モグリュー',excadrill:'ドリュウズ',audino:'タブンネ',timburr:'ドッコラー',gurdurr:'ドテッコツ',conkeldurr:'ローブシン',tympole:'タマゲタケ',palpitoad:'ガマガル',seismitoad:'ガマゲロゲ',throh:'ナゲキ',sawk:'ダゲキ',sewaddle:'クルミル',swadloon:'クルマユ',leavanny:'ハハコモリ',venipede:'フシデ',whirlipede:'ホイーガ',scolipede:'ペンドラー',cottonee:'モンメン',whimsicott:'エルフーン',petilil:'チュリネ',lilligant:'ドレディア',basculin:'バスラオ',sandile:'メグロコ',krokorok:'ワルビル',krookodile:'ワルビアル',darumaka:'ダルマッカ',darmanitan:'ヒヒダルマ',maractus:'マラカッチ',dwebble:'イシズマイ',crustle:'イワパレス',scraggy:'ズルッグ',scrafty:'ズルズキン',sigilyph:'デシアン',yamask:'デスマス',cofagrigus:'デスカーン',tirtouga:'プロトーガ',carracosta:'アバゴーラ',archen:'アーケン',archeops:'アーケオス',trubbish:'ヤブクロン',garbodor:'ダストダス',zorua:'ゾロア',zoroark:'ゾロアーク',minccino:'チラーミィ',cinccino:'チラチーノ',gothita:'ゴチム',gothorita:'ゴチミル',gothitelle:'ゴチルゼル',solosis:'ユニラン',duosion:'ダブラン',reuniclus:'ランクルス',ducklett:'コアルヒー',swanna:'スワンナ',vanillite:'バニプッチ',vanillish:'バニリッチ',vanilluxe:'バイバニラ',deerling:'シキジカ',sawsbuck:'メブキジカ',emolga:'エモンガ',karrablast:'カブルモ',escavalier:'シュバルゴ',foongus:'フシデ',amoonguss:'モロバレル',frillish:'プルリル',jellicent:'ブルンゲル',alomomola:'ママンボウ',joltik:'バチュル',galvantula:'デンチュラ',ferroseed:'テッシード',ferrothorn:'ナットレイ',klink:'ギアル',klang:'ギギアル',klinklang:'ギギギアル',tynamo:'シビシラス',eelektrik:'シビビール',eelektross:'シビルドン',elgyem:'リグレー',beheeyem:'オーベム',litwick:'ヒトモシ',lampent:'ランプラー',chandelure:'シャンデラ',axew:'キバゴ',fraxure:'オノンド',haxorus:'オノノクス',cubchoo:'クマシュン',beartic:'ツンベアー',cryogonal:'フリージオ',shelmet:'チョボマキ',accelgor:'アギルダー',stunfisk:'マッギョ',mienfoo:'コジョフー',mienshao:'コジョンド',druddigon:'クリムガン',golett:'ゴビット',golurk:'ゴルーグ',pawniard:'コマタナ',bisharp:'キリキザン',bouffalant:'バッフロン',rufflet:'ワシボン',braviary:'ウォーグル',vullaby:'バルチャイ',mandibuzz:'バルジーナ',heatmor:'クイタラン',durant:'アイアント',deino:'モノズ',zweilous:'ジヘッド',hydreigon:'サザンドラ',larvesta:'メラルバ',volcarona:'ウルガモス',cobalion:'コバルオン',terrakion:'テラキオン',virizion:'ビリジオン',tornadus:'トルネロス',thundurus:'ボルトロス',reshiram:'レシラム',zekrom:'ゼクロム',landorus:'ランドロス',kyurem:'キュレム',keldeo:'ケルディオ',meloetta:'メロエッタ',genesect:'ゲノセクト',chespin:'ハリマロン',quilladin:'ハリボーグ',chesnaught:'ブリガロン',fennekin:'フォッコ',braixen:'テールナー',delphox:'マフォクシー',froakie:'ケロマツ',frogadier:'ゲコガシラ',greninja:'ゲッコウガ',bunnelby:'ホルビー',diggersby:'ホルード',fletchling:'ヤヤコマ',fletchinder:'ヒノヤコマ',talonflame:'ファイアロー',scatterbug:'コフキムシ',spewpa:'コフーライ',vivillon:'ビビヨン',litleo:'シシコ',pyroar:'カエンジシ',flabebe:'フラベベ',floette:'フラエッテ',florges:'フラージェス',skiddo:'メェークル',gogoat:'ゴーゴート',pancham:'ヤンチャム',pangoro:'ゴロンダ',furfrou:'トリミアン',espurr:'ニャスパー',meowstic:'ニャオニクス',honedge:'ヒトツキ',doublade:'ニダンギル',aegislash:'ギルガルド',spritzee:'シュシュプ',aromatisse:'フレフワン',swirlix:'ペロッパフ',slurpuff:'ペロリーム',inkay:'マーイーカ',malamar:'カラマネロ',binacle:'カメテテ',barbaracle:'ガメノデス',skrelp:'クズモー',dragalge:'ドラミドロ',clauncher:'ウデッポウ',clawitzer:'ブロスター',helioptile:'エリキテル',heliolisk:'エレザード',tyrunt:'チゴラス',tyrantrum:'ガチゴラス',amaura:'アマルス',aurorus:'アマルルガ',sylveon:'ニンフィア',hawlucha:'ルチャブル',dedenne:'デデンネ',carbink:'メレシー',goomy:'ヌメラ',sliggoo:'ヌメイル',goodra:'ヌメルゴン',klefki:'クレッフィ',phantump:'ボクレー',trevenant:'オーロット',pumpkaboo:'バケッチャ',gourgeist:'パンプジン',bergmite:'カチコール',avalugg:'クレベース',noibat:'オンバット',noivern:'オンバーン',xerneas:'ゼルネアス',yveltal:'イベルタル',zygarde:'ジガルデ',diancie:'ディアンシー',hoopa:'フーパ',volcanion:'ボルケニオン',rowlet:'モクロー',dartrix:'フクスロー',decidueye:'ジュナイパー',litten:'ニャビー',torracat:'ニャヒート',incineroar:'ガオガエン',popplio:'アシマリ',brionne:'オシャマリ',primarina:'アシレーヌ',pikipek:'ツツケラ',trumbeak:'ケララッパ',toucannon:'ドデカバシ',yungoos:'ヤングース',gumshoos:'デカグース',grubbin:'アゴジムシ',charjabug:'デンヂムシ',vikavolt:'クワガノン',crabrawler:'マケンカニ',crabominable:'ケケンカニ',oricorio:'オドリドリ',cutiefly:'アブリー',ribombee:'アブリボン',rockruff:'イワンコ',lycanroc:'ルガルガン',wishiwashi:'ヨワシ',mareanie:'ヒドイデ',toxapex:'ドヒドイデ',mudbray:'ドロバンコ',mudsdale:'バンバドロ',dewpider:'シズクモ',araquanid:'オニシズクモ',fomantis:'カリキリ',lurantis:'ラランテス',morelull:'ネマシュ',shiinotic:'マシェード',salandit:'ヤトウモリ',salazzle:'エンニュート',stufful:'ヌイコグマ',bewear:'キテルグマ',bounsweet:'アマカジ',steenee:'アママイコ',tsareena:'アマージョ',comfey:'キュワワー',oranguru:'ナゲツケサル',passimian:'ヤレユータン',wimpod:'コソクムシ',golisopod:'グソクムシャ',sandygast:'スナバァ',palossand:'シロデスナ',pyukumuku:'ナマコブシ',minior:'メテノ',komala:'ネッコアラ',turtonator:'バクガメス',togedemaru:'トゲデマル',mimikyu:'ミミッキュ',bruxish:'ハギギシリ',drampa:'ジジーロン',dhelmise:'ダダリン','jangmo-o':'ジャラコ','hakamo-o':'ジャランゴ','kommo-o':'ジャラランガ','tapu-koko':'カプ・コケコ','tapu-lele':'カプ・テテフ','tapu-bulu':'カプ・ブルル','tapu-fini':'カプ・レヒレ',cosmog:'コスモッグ',cosmoem:'コスモウム',solgaleo:'ソルガレオ',lunala:'ルナアーラ',nihilego:'ニルギリ',buzzwole:'マッシブーン',pheromosa:'フェローチェ',xurkitree:'デンジュモク',celesteela:'テッカグヤ',kartana:'カミツルギ',guzzlord:'アクジキング',necrozma:'ネクロズマ',magearna:'マギアナ',marshadow:'マーシャドー',poipole:'ベベノム',naganadel:'アーゴヨン',stakataka:'ツンデツンデ',blacephalon:'ズガドーン',zeraora:'ゼラオラ',meltan:'メルタン',melmetal:'メルメタル',grookey:'サルノリ',thwackey:'バチンキー',rillaboom:'ゴリランダー',scorbunny:'ヒバニー',raboot:'ラビフット',cinderace:'エースバーン',sobble:'メッソン',drizzile:'ジメレオン',inteleon:'インテレオン',skwovet:'ホシガリス',greedent:'ヨクバリス',rookidee:'ツブツブコ',corvisquire:'アイアントン',corviknight:'アーマーガア',blipbug:'サッチムシ',dottler:'レドームシ',orbeetle:'イオルブ',nickit:'クスネ',thievul:'フォクスライ',gossifleur:'ヒメンカ',eldegoss:'ワタシラガ',wooloo:'ウールー',dubwool:'バリコオル',chewtle:'カムカメ',drednaw:'カジリガメ',yamper:'ワンパチ',boltund:'パルスワン',rolycoly:'タンドン',carkol:'トロッゴン',coalossal:'セキタンザン',applin:'アップリュー',flapple:'アップルパイ',appletun:'タルップル',silicobra:'サダイジャ',sandaconda:'ウォーグル',cramorant:'ウッウ',arrokuda:'サシカマス',barraskewda:'カマスジョー',toxel:'エレズン',toxtricity:'ストリンデル',sizzlipede:'ヤクデ',centiskorch:'マルヤクデ',clobbopus:'タタッコ',grapploct:'オトスパス',sinistea:'ヤバチャ',polteageist:'ポットデス',hatenna:'ミブリム',hattrem:'テブリム',hatterene:'ブリムオン',impidimp:'ベロバー',morgrem:'ギモー',grimmsnarl:'オーロンゲ',obstagoon:'タチフサグマ',perrserker:'ニャイキング',cursola:'サニゴーン',sirfetchd:'ネギガナイト','mr-rime':'バリコオル',runerigus:'デスバーン',milcery:'マホミル',alcremie:'マホイップ',falinks:'タイレーツ',pincurchin:'バチンウニ',snom:'ユキハミ',frosmoth:'モスノウ',stonjourner:'イシヘンジン',eiscue:'コオリッポ',indeedee:'イエッサン',morpeko:'モルペコ',cufant:'ゾウドウ',copperajah:'ダイオウドウ',dracozolt:'パッチラゴン',arctozolt:'パッチルドン',dracovish:'ウオチルドン',arctovish:'ウオノラゴン',duraludon:'ジュラルドン',dreepy:'ドラメシヤ',drakloak:'ドロンチ',dragapult:'ドラパルト',zacian:'ザシアン',zamazenta:'ザマゼンタ',eternatus:'ムゲンダイナ',kubfu:'ダクマ',urshifu:'ウーラオス',zarude:'ザルード',regieleki:'レジエレキ',regidrago:'レジドラゴ',glastrier:'ブリザポス',spectrier:'レイスポス',calyrex:'バドレックス',wyrdeer:'シンオウジカ',kleavor:'バサギリ',ursaluna:'ガチグマ',basculegion:'バサオウ',sneasler:'ニューラ',overqwil:'ハリーマン',enamorus:'エナモリ',sprigatito:'ニャオハ',floragato:'ニャローテ',meowscarada:'マスカーニャ',fuecoco:'ホゲータ',crocalor:'アチゲータ',skeledirge:'ラウドボーン',quaxly:'クワッス',quaxwell:'ウェルカモ',quaquaval:'ウェーニバル',lechonk:'イキリンコ',oinkologne:'イキリンコ',tarountula:'タマンチュラ',spidops:'ワナイダー',nymble:'バグリー',lokix:'エクスレッグ',pawmi:'パモ',pawmo:'パモット',pawmot:'パーモット',tandemaus:'イッカネズミ',maushold:'イッカネズミ',fidough:'パフュートン',dachsbun:'パフュードン',smoliv:'オリーニョ',dolliv:'オリーバ',arboliva:'オリーニョ',nacli:'シオカラス',naclstack:'シオカラス',garganacl:'シオカラス',charcadet:'カルボウ',armarouge:'グレンアルマ',ceruledge:'ソウブレイズ',tadbulb:'タドツボ',bellibolt:'エレコブラ',wattrel:'カイデン',kilowattrel:'カイデン',shroodle:'リキキリ',grafaiai:'リキキリ',bramblin:'ドンブリメン',brambleghast:'ドンブリメン',toedscool:'ノノクラゲ',toedscruel:'ドクノクラゲ',klawf:'ガケガニ',capsakid:'カラミンゴ',scovillain:'カラミンゴ',flittle:'フリッジョ',tinkatink:'テツノカイナ',tinkatuff:'テツノカイナ',tinkaton:'テツノカイナ',wiglett:'ウミディグダ',wugtrio:'ウミトリオ',finizen:'イルカマン',palafin:'イルカマン',varoom:'ジェットヤドラン',revavroom:'ジェットヤドラン',cyclizar:'ドンドン',orthworm:'ミミズズ',glimmet:'キラーメ',glimmora:'キラフロル',greavard:'ハロウボック',houndstone:'ハロウボック',flamigo:'フラミジョー',cetoddle:'タケルライコ',cetitan:'タケルライコ',dondozo:'ヘイラッシャ',annihilape:'コノヨザル',clodsire:'ドオー',farigiraf:'イイネイヌ',dudunsparce:'ノコッチ',kingambit:'セグレイブ',frigibax:'セビエ',arctibax:'セゴール',baxcalibur:'セグレイブ',gimmighoul:'コレクレー',gholdengo:'サーフゴー','wo-chien':'イイネイヌ','chien-pao':'サケブシッポ','ting-lu':'マシマシラ','chi-yu':'カイデン','roaring-moon':'テツノカシラ','iron-valiant':'テツノブジン',koraidon:'コライドン',miraidon:'ミライドン','walking-wake':'ウォーキングウェイク','iron-leaves':'テツノイブキ',ogerpon:'オーガポン',terapagos:'テラパゴス',pecharunt:'ペチャム'};
 
-  const gen = GENERATIONS[idx];
-  pokeData = [];
-  flippedSet = new Set();
+function getJP(n){if(JP[n])return JP[n];const c=n.replace(/-/g,'');if(JP[c])return JP[c];const b=n.split('-')[0];if(JP[b])return JP[b];return null;}
 
-  document.getElementById('grid').innerHTML = '';
-  document.getElementById('empty-area').style.display = 'none';
-  document.getElementById('loading-area').style.display = 'block';
-  document.getElementById('toolbar-area').style.display = 'none';
-  document.getElementById('progress-bar').style.width = '0%';
+let curGen=null,pokeData=[],flipped=new Set(),abort=false;
 
-  const total = gen.end - gen.start + 1;
-  let loaded = 0;
-
-  const BATCH = 10;
-  for (let i = gen.start; i <= gen.end; i += BATCH) {
-    if (loadingAbort) return;
-    const batch = [];
-    for (let j = i; j < Math.min(i + BATCH, gen.end + 1); j++) {
-      batch.push(fetch('https://pokeapi.co/api/v2/pokemon/' + j).then(r => r.json()).catch(() => null));
-    }
-    const results = await Promise.all(batch);
-    for (const data of results) {
-      if (!data) continue;
-      const jpName = getJP(data.name);
-      const poke = {
-        id: data.id,
-        name: data.name,
-        nameJP: jpName || data.name,
-        sprite: (data.sprites.other && data.sprites.other['official-artwork'] && data.sprites.other['official-artwork'].front_default) || data.sprites.front_default,
-        types: data.types.map(t => t.type.name),
-      };
-      pokeData.push(poke);
-      loaded++;
-      document.getElementById('load-progress').textContent = loaded + ' / ' + total;
-      document.getElementById('progress-bar').style.width = Math.round(loaded / total * 100) + '%';
-      appendCard(poke, pokeData.length - 1);
+function buildGenSel(){
+  const s=document.getElementById('gen-selector');
+  GENS.forEach((g,i)=>{const b=document.createElement('button');b.className='gen-btn';b.id='gb'+i;b.textContent=g.label;b.onclick=()=>selGen(i);s.appendChild(b);});
+}
+async function selGen(idx){
+  if(curGen===idx)return;
+  abort=true;await new Promise(r=>setTimeout(r,50));abort=false;curGen=idx;
+  document.querySelectorAll('.gen-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  const g=GENS[idx];pokeData=[];flipped=new Set();
+  document.getElementById('grid').innerHTML='';
+  document.getElementById('empty-area').style.display='none';
+  document.getElementById('loading-area').style.display='block';
+  document.getElementById('toolbar-area').style.display='none';
+  document.getElementById('progress-bar').style.width='0%';
+  const total=g.end-g.start+1;let loaded=0;
+  for(let i=g.start;i<=g.end;i+=10){
+    if(abort)return;
+    const batch=[];
+    for(let j=i;j<Math.min(i+10,g.end+1);j++)batch.push(fetch('https://pokeapi.co/api/v2/pokemon/'+j).then(r=>r.json()).catch(()=>null));
+    const res=await Promise.all(batch);
+    for(const d of res){
+      if(!d)continue;
+      const jp=getJP(d.name);
+      const p={id:d.id,name:d.name,nameJP:jp||d.name,sprite:(d.sprites.other&&d.sprites.other['official-artwork']&&d.sprites.other['official-artwork'].front_default)||d.sprites.front_default,types:d.types.map(t=>t.type.name)};
+      pokeData.push(p);loaded++;
+      document.getElementById('load-progress').textContent=loaded+' / '+total;
+      document.getElementById('progress-bar').style.width=Math.round(loaded/total*100)+'%';
+      addCard(p,pokeData.length-1);
     }
   }
-
-  document.getElementById('loading-area').style.display = 'none';
-  document.getElementById('toolbar-area').style.display = 'block';
-  updateStatus();
+  document.getElementById('loading-area').style.display='none';
+  document.getElementById('toolbar-area').style.display='block';
+  updStat();
 }
-
-function appendCard(poke, idx) {
-  const grid = document.getElementById('grid');
-  const wrap = document.createElement('div');
-  wrap.className = 'card-wrap';
-  wrap.onclick = () => toggleCard(idx);
-
-  const typeBadges = poke.types.map(t => {
-    const c = TYPE_COLORS[t] || {bg:'#888',text:'#fff'};
-    const jp = TYPE_JP[t] || t;
-    return '<span class="type-badge" style="background:' + c.bg + ';color:' + c.text + '">' + jp + '</span>';
-  }).join('');
-
-  wrap.innerHTML =
-    '<div class="card-inner" id="ci-' + idx + '">' +
-      '<div class="card-face">' +
-        '<img class="poke-img" src="' + poke.sprite + '" alt="ポケモン" loading="lazy">' +
-        '<div class="hint">タップして確認</div>' +
-      '</div>' +
-      '<div class="card-face card-back">' +
-        '<div class="poke-no">No.' + String(poke.id).padStart(3,'0') + '</div>' +
-        '<img class="poke-img-back" src="' + poke.sprite + '" alt="' + poke.nameJP + '" loading="lazy">' +
-        '<div class="poke-name">' + poke.nameJP + '</div>' +
-        '<div class="type-row">' + typeBadges + '</div>' +
-      '</div>' +
-    '</div>';
-  grid.appendChild(wrap);
+function addCard(p,idx){
+  const grid=document.getElementById('grid'),w=document.createElement('div');
+  w.className='card-wrap';w.onclick=()=>toggleCard(idx);
+  const tb=p.types.map(t=>'<span class="type-badge" style="background:'+TC[t].bg+';color:'+TC[t].text+'">'+TJ[t]+'</span>').join('');
+  w.innerHTML='<div class="card-inner" id="ci'+idx+'"><div class="card-face"><img class="poke-img" src="'+p.sprite+'" loading="lazy"><div class="hint">タップして確認</div></div><div class="card-face card-back"><div class="poke-no">No.'+String(p.id).padStart(3,'0')+'</div><img class="poke-img-back" src="'+p.sprite+'" loading="lazy"><div class="poke-name">'+p.nameJP+'</div><div class="type-row">'+tb+'</div></div></div>';
+  grid.appendChild(w);
 }
+function toggleCard(i){const e=document.getElementById('ci'+i);if(!e)return;if(flipped.has(i)){flipped.delete(i);e.classList.remove('flipped');}else{flipped.add(i);e.classList.add('flipped');}updStat();}
+function revealAll(){pokeData.forEach((_,i)=>{flipped.add(i);const e=document.getElementById('ci'+i);if(e)e.classList.add('flipped');});updStat();}
+function closeAll(){flipped.clear();pokeData.forEach((_,i)=>{const e=document.getElementById('ci'+i);if(e)e.classList.remove('flipped');});updStat();}
+function shuffleCurrent(){const g=document.getElementById('grid'),c=Array.from(g.children);for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));g.appendChild(c[j]);c.splice(j,1);}}
+function updStat(){const t=pokeData.length,o=flipped.size;document.getElementById('status-label').textContent='確認済み '+o+' / '+t;document.getElementById('progress-bar').style.width=Math.round(o/t*100)+'%';}
 
-function toggleCard(idx) {
-  const el = document.getElementById('ci-' + idx);
-  if (!el) return;
-  if (flippedSet.has(idx)) { flippedSet.delete(idx); el.classList.remove('flipped'); }
-  else { flippedSet.add(idx); el.classList.add('flipped'); }
-  updateStatus();
-}
-
-function revealAll() {
-  pokeData.forEach((_, i) => { flippedSet.add(i); const el = document.getElementById('ci-' + i); if (el) el.classList.add('flipped'); });
-  updateStatus();
-}
-
-function closeAll() {
-  flippedSet.clear();
-  pokeData.forEach((_, i) => { const el = document.getElementById('ci-' + i); if (el) el.classList.remove('flipped'); });
-  updateStatus();
-}
-
-function shuffleCurrent() {
-  const grid = document.getElementById('grid');
-  const cards = Array.from(grid.children);
-  for (let i = cards.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    grid.appendChild(cards[j]);
-    cards.splice(j, 1);
-  }
-}
-
-function updateStatus() {
-  const total = pokeData.length;
-  const opened = flippedSet.size;
-  document.getElementById('status-label').textContent = '確認済み ' + opened + ' / ' + total;
-  document.getElementById('progress-bar').style.width = Math.round(opened / total * 100) + '%';
-}
-
-buildGenSelector();
+buildGenSel();
+buildTypeSel();
 </script>
 </body>
 </html>
